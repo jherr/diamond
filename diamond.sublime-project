@@ -1,0 +1,10 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+            "folder_exclude_patterns": ["./lib","doc","log","script","tmp","vendor","node_modules","topics","db/sphinx","extras",".yardoc",".bundle",".tmp",".sass-cache"],
+            "file_exclude_patterns": ["*.gitignore","*.ru","*.lock","Rakefile","README.*","*.png","*.gitkeep","*.sublime-workspace","*.sql","404.html","422.html","500.html","*.ico","robots.txt",".bowerrc",".editorconfig",".gitattributes",".jshintrc",".travis.yml"]
+		}
+	]
+}
