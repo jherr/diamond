@@ -22,7 +22,7 @@ describe('Gameboard', function () {
     gb.set(0,0,c);
     expect(c.moveTo).toHaveBeenCalledWith(0,0);
 
-    gb.set(2,3,c);
+    gb.move(c,2,3);
     expect(c.moveTo).toHaveBeenCalledWith(2,3);
     expect(c.row).toBe(2);
     expect(c.column).toBe(3);
@@ -83,5 +83,50 @@ describe('Gameboard', function () {
     expect(colorsInGrid(gb.allRows())).toEqual([['A',null,'C'],['D','E','F'],['G','H','I'],['J','K','L']]);
     gb.set(2,0,null);
     expect(colorsInGrid(gb.allRows())).toEqual([['A',null,'C'],['D','E','F'],[null,'H','I'],['J','K','L']]);
+  });
+
+  it('should generate events', function () {
+    var addeds = [];
+    var moveds = [];
+    var removeds = [];
+    var gb = new Gameboard(5,10,{
+        cellAdded: function( event ) {
+            addeds.push( event );
+        },
+        cellMoved: function( event ) {
+            moveds.push( event );
+        },
+        cellRemoved: function( event ) {
+            removeds.push( event );
+        }
+    });
+
+    var c1 = new Cell('red');
+    gb.set(1,2,c1);
+    expect(c1.row).toBe(1);
+    expect(c1.column).toBe(2);
+
+    expect( addeds.length ).toBe( 1 );
+    expect( moveds.length ).toBe( 0 );
+    expect( removeds.length ).toBe( 0 );
+    expect( addeds[0].cell ).toBe( c1 );
+
+    addeds = [];
+
+    gb.move(c1,3,3);
+    expect( addeds.length ).toBe( 0 );
+    expect( moveds.length ).toBe( 1 );
+    expect( removeds.length ).toBe( 0 );
+    expect( moveds[0].cell ).toBe( c1 );
+    expect( moveds[0].from.row ).toBe( 1 );
+    expect( moveds[0].from.column ).toBe( 2 );
+
+    moveds = [];
+
+    gb.set(3,3,null);
+    expect( addeds.length ).toBe( 0 );
+    expect( moveds.length ).toBe( 0 );
+    expect( removeds.length ).toBe( 1 );
+    expect( removeds[0].cell ).toBe( c1 );
   });
 });

@@ -1,6 +1,35 @@
 'use strict';
 
+function SimpleEventDispatcher() {
+	this.subscribers = {};
+}
+
+SimpleEventDispatcher.prototype.setSubscribersFromObject = function( obj ) {
+	if ( obj != null ) {
+		for( var k in obj ) {
+			this.on( k, obj[ k ] );
+		}
+	}
+}
+
+SimpleEventDispatcher.prototype.on = function( event, callback ) {
+	if ( this.subscribers[ event ] == null )
+		this.subscribers[ event ] = [];
+	this.subscribers[ event ].push( callback );
+}
+
+SimpleEventDispatcher.prototype.fire = function( event, data ) {
+	if ( this.subscribers[ event ] != null ) {
+		for( var cb in this.subscribers[ event ] ) {
+			this.subscribers[ event ][ cb ].call( this, data );
+		}
+	}
+}
+
+DiamondGame.prototype = new SimpleEventDispatcher();
 function DiamondGame( gameboard, cellFactory, options ) {
+	DiamondGame.prototype.constructor();
+
 	this.gameboard = gameboard;
 	this.cellFactory = cellFactory;
 	this.firstPoint = null;
@@ -20,7 +49,7 @@ function DiamondGame( gameboard, cellFactory, options ) {
 		this.options.cascadeCollapses = true;
 	}
 
-	this.setupSubscribers();
+	this.setSubscribersFromObject( this.options.on );
 }
 
 DiamondGame.prototype.hasPending = function() {
@@ -56,15 +85,6 @@ DiamondGame.prototype.addPendingDelay = function( delay ) {
 			}, delay );
 			return true;
 		} );
-	}
-}
-
-DiamondGame.prototype.setupSubscribers = function() {
-	this.subscribers = {};
-	if ( this.options.on != null ) {
-		for( var k in this.options.on ) {
-			this.on( k, this.options.on[ k ] );
-		}
 	}
 }
 
@@ -207,20 +227,6 @@ DiamondGame.prototype.collapse = function( ) {
 	}
 
 	return ( found.length > 0 );
-}
-
-DiamondGame.prototype.on = function( event, callback ) {
-	if ( this.subscribers[ event ] == null )
-		this.subscribers[ event ] = [];
-	this.subscribers[ event ].push( callback );
-}
-
-DiamondGame.prototype.fire = function( event, data ) {
-	if ( this.subscribers[ event ] != null ) {
-		for( var cb in this.subscribers[ event ] ) {
-			this.subscribers[ event ][ cb ].call( this, data );
-		}
-	}
 }
 
 DiamondGame.prototype.initialSetup = function() {

@@ -1,6 +1,9 @@
 'use strict';
 
-function Gameboard( rows, columns ) {
+Gameboard.prototype = new SimpleEventDispatcher();
+function Gameboard( rows, columns, eventListeners ) {
+	Gameboard.prototype.constructor();
+
 	this.rows = rows;
 	this.columns = columns;
 	this.nextCellId = 1;
@@ -13,29 +16,80 @@ function Gameboard( rows, columns ) {
 		}
 		this.grid.push( row );
 	}
+
+	this.setSubscribersFromObject(eventListeners);
 }
 
 Gameboard.prototype.get = function( row, column ) {
 	return this.grid[ row ][ column ];
 }
 
+Gameboard.prototype.move = function( cell, row, column ) {
+	if ( cell.row == null || cell.column == null ) {
+		throw new Error("Invalid move - cell is not on board");
+	}
+
+	var originalPosition = { row:cell.row, column:cell.column };
+
+	var row = parseInt( row );
+	var column = parseInt( column );
+
+	if ( this.grid[ row ][ column ] != null ) {
+		throw new Error("Invalid move - target cell not empty");
+	}
+
+	this.grid[ cell.row ][ cell.column ] = null;
+	this.grid[ row ][ column ] = cell;
+
+	cell.moveTo( row, column );
+
+	this.fire('cellMoved',{from:originalPosition,cell:this.grid[ row ][ column ]});
+}
+
 Gameboard.prototype.set = function( row, column, cell ) {
+	if ( cell && ( cell.row != null || cell.column != null ) ) {
+		throw new Error("Invalid set - cell is already on board");
+	}
+
 	if ( cell && cell._id == null ) {
 		cell._id = this.nextCellId++;
 	}
 
-	this.grid[ row ][ column ] = cell;
+	var originalPosition = null;
+	if ( cell == null ) {
+		if ( this.grid[ row ][ column ] != null ) {
+			this.fire('cellRemoved',{cell:this.grid[ row ][ column ]});
+		}
+	}
+
+	this.grid[ parseInt( row ) ][ column ] = cell;
 
 	if ( cell != null ) {
 		cell.moveTo( parseInt( row ), column );
 	}
+
+	if ( cell != null ) {
+		this.fire('cellAdded',{cell:this.grid[ row ][ column ]});
+	}
 }
 
 Gameboard.prototype.swap = function( cell1, cell2 ) {
-	var ocr = cell1.row;
-	var orc = cell1.column;
-	this.set( cell2.row, cell2.column, cell1 );
-	this.set( ocr, orc, cell2 );
+	if ( cell1.row == null || cell1.column == null || cell2.row == null || cell2.column == null ) {
+		throw new Error("Invalid swap - cells not on board");
+	}
+
+	var op1 = { row: cell1.row, column: cell1.column };
+	var op2 = { row: cell2.row, column: cell2.column };
+
+	this.grid[ op2.row ][ op2.column ] = cell1;
+	cell1.moveTo( op2.row, op2.column );
+
+	this.grid[ op1.row ][ op1.column ] = cell2;
+	cell2.moveTo( op1.row, op1.column );
+
+	this.fire('cellSwapped',{cell1:cell1,cell2:cell2});
+	this.fire('cellMoved',{from:op1,cell:cell1});
+	this.fire('cellMoved',{from:op2,cell:cell2});
 }
 
 Gameboard.prototype.row = function( row ) {
@@ -105,8 +159,7 @@ Gameboard.prototype.collapseColumn = function( column ) {
 			shift += 1;
 		} else {
 			if ( shift > 0 ) {
-				this.set( column[ci].row + shift, column[ci].column, column[ci] );
-				this.set( ci, column[ci].column, null );
+				this.move( column[ci], column[ci].row + shift, column[ci].column );
 			}
 		}
 	}
