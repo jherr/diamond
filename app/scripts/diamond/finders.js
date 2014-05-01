@@ -10,18 +10,14 @@ RowColFinder.prototype.find = function( board ) {
 	var found = this.findSequences( board.allRows() );
 	for( var f in found ) { out.push( found[f] ); }
 
-	var found = this.findSequences( board.allColumns() );
-	for( var f in found ) { out.push( found[f] ); }
+	found = this.findSequences( board.allColumns() );
+	for( f in found ) { out.push( found[f] ); }
 
 	return out;
-}
+};
 
 RowColFinder.prototype.findSequences = function( rows ) {
 	var out = [];
-
-	if ( this.debug ) {
-		dumpRows( rows );
-	}
 
 	for( var r in rows ) {
 		var row = rows[r];
@@ -30,17 +26,17 @@ RowColFinder.prototype.findSequences = function( rows ) {
 
 		for( var i in row ) {
 			var cell = row[ i ];
-			if ( cell == null ) {
+			if ( cell === null ) {
 				if ( seq.length >= this.cutoff ) {
 					out.push( seq );
 				}
 				seq = [];
 				nonWild = null;
 			} else {
-				if ( cell.isWildcard() ) {
+				if ( cell.isWildcard( ) ) {
 					seq.push( cell );
 				} else {
-					if ( nonWild == null ) {
+					if ( nonWild === null ) {
 						nonWild = cell;
 					}
 					if( nonWild.match( cell ) ) {
@@ -49,8 +45,12 @@ RowColFinder.prototype.findSequences = function( rows ) {
 						if ( seq.length >= this.cutoff ) {
 							out.push( seq );
 						}
-						var last = seq[ seq.length - 1 ];
-						seq = last.isWildcard() ? [ last, cell ] : [ cell ];
+						if ( seq.length > 0 ) {
+							var last = seq[ seq.length - 1 ];
+							seq = last.isWildcard( ) ? [ last, cell ] : [ cell ];
+						} else {
+							seq = [ cell ];
+						}
 						nonWild = cell;
 					}
 				}
@@ -63,4 +63,4 @@ RowColFinder.prototype.findSequences = function( rows ) {
 	}
 
 	return out;
-}
+};

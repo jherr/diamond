@@ -7,68 +7,82 @@ function Cell( color ) {
 	this.element = null;
 }
 
-Cell.prototype.isWildcard = function() {
-	return ( this.color == null );
-}
+/*jshint unused:false */
+Cell.prototype.isWildcard = function( ) {
+	return ( this.color === null );
+};
 
+/*jshint unused:false */
 Cell.prototype.match = function( ocell ) {
-	return ( this.isWildcard() || ocell.isWildcard() || ocell.color == this.color );
-}
+	return ( this.isWildcard() || ocell.isWildcard() || ocell.color === this.color );
+};
 
 Cell.prototype.moveTo = function( row, column ) {
 	this.row = row;
 	this.column = column;
-}
+};
 
 Cell.prototype.toString = function() {
 	return this.color;
-}
+};
 
+/*jshint unused:false */
+Cell.prototype.renderInto = function( element ) {
+};
+
+/*jshint unused:false */
 Cell.prototype.destroyed = function( game ) {
-}
+};
 
 
-Bomb.prototype = new Cell( '!' );
-Bomb.prototype.constructor = Bomb;
 function Bomb( radius ) {
 	this.radius = radius;
 	this.row = null;
 	this.column = null;
 	this.element = null;
 }
-Bomb.prototype.isWildcard = function() {
+
+Bomb.prototype = new Cell( '!' );
+Bomb.prototype.constructor = Bomb;
+
+Bomb.prototype.isWildcard = function( ) {
 	return true;
-}
+};
+
 Bomb.prototype.match = function( ocell ) {
 	return true;
-}
+};
+
 Bomb.prototype.destroyed = function( game ) {
 	var self = this;
 	game.removeCellsWhere( function( row, column, cell ) {
-		if ( row == self.row && column == self.column )
+		if ( row === self.row && column === self.column ) {
 			return false;
+		}
 		var dc = ( self.column - column ) * ( self.column - column );
 		var dr = ( self.row - row ) * ( self.row - row );
 		var dist = Math.sqrt( dc + dr );
 		return dist <= self.radius;
 	} );
-}
+};
 
 
-ColorBomb.prototype = new Cell( 'A' );
-ColorBomb.prototype.constructor = ColorBomb;
 function ColorBomb( color ) {
 	this.color = color.toUpperCase();
 	this.row = null;
 	this.column = null;
 	this.element = null;
 }
+
+ColorBomb.prototype = new Cell( 'A' );
+ColorBomb.prototype.constructor = ColorBomb;
+
 ColorBomb.prototype.destroyed = function( game ) {
 	var self = this;
 	game.removeCellsWhere( function( row, column, cell ) {
-		return ( cell.color == self.color );
+		return ( cell.color === self.color );
 	} );
-}
+};
 
 
 function CellFactory( colors ) {
@@ -77,23 +91,23 @@ function CellFactory( colors ) {
 
 CellFactory.prototype.build = function( row, column ) {
 	return new Cell( this.colors[Math.floor(Math.random()*this.colors.length)] );
-}
+};
 
 
 function TestFactoryWithGrid( grid ) {
 	this.grid = grid;
 	this.build = function( row, column ) {
-		if ( this.grid[row].charAt(column) == '!' )
+		if ( this.grid[row].charAt(column) === '!' ) {
 			return new Bomb( 3 );
-		else {
+		} else {
 			var color = this.grid[row].charAt(column);
-			if ( color.search(/^[a-z]$/) == 0 ) {
+			if ( color.search(/^[a-z]$/) === 0 ) {
 				return new ColorBomb( color );
 			} else {
 				return new Cell( color );
 			}
 		}
-	}
+	};
 }
 
 function TestFactoryWithSequence( columns, sequence ) {
@@ -102,7 +116,7 @@ function TestFactoryWithSequence( columns, sequence ) {
 	this.build = function( row, column ) {
 		var offset = ( ( row * this.columns ) + column ) % this.sequence.length;
 		return new Cell( this.sequence.charAt( offset ) );
-	}
+	};
 }
 
 function TestFactoryWithRowSequence( sequence ) {
@@ -110,5 +124,5 @@ function TestFactoryWithRowSequence( sequence ) {
 	this.build = function( row, column ) {
 		var offset = row % this.sequence.length;
 		return new Cell( this.sequence.charAt( offset ) );
-	}
+	};
 }
