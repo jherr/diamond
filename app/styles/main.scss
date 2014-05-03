@@ -1,11 +1,12 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$icon-font-path: "/fonts";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 
 // bower:scss
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
 // endbower
 
-@import "../bower_components/fontawesome/scss/font-awesome.scss";
+@import 'fontawesome/font-awesome.scss';
 
 .browsehappy {
     margin: 0.2em 0;
@@ -52,26 +53,6 @@ body {
     margin: 30px 0;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.jumbotron .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-}
-
-/* Supporting marketing content */
-.marketing {
-    margin: 40px 0;
-}
-
-.marketing p + h4 {
-    margin-top: 28px;
-}
-
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
     .container {
@@ -95,4 +76,76 @@ body {
     }
 }
 
-@import "diamond.css";
+.board {
+    position: relative;
+}
+
+.diamond {
+    position: absolute;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+}
+div.game-heart {
+    background: #FFE0FF;
+}
+div.game-chevy {
+    background: lightblue;
+}
+div.game-tictac {
+    background: plum;
+}
+div.game-square {
+    background: palegreen;
+}
+div.game-star {
+    background: pink;
+}
+div.game-bomb {
+    background: #333;
+}
+div.game-any {
+    background: #eee;
+}
+div.game-heart i {
+    color: red;
+    font-size: 34px;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+div.game-chevy i {
+    color: blue;
+    font-size: 37px;
+    margin-left: 4px;
+    margin-top: 2px;
+}
+div.game-tictac i {
+    color: purple;
+    font-size: 34px;
+    margin-left: 3px;
+    margin-top: 5px;
+}
+div.game-square i {
+    color: green;
+    font-size: 37px;
+    margin-left: 4px;
+    margin-top: 2px;
+}
+div.game-star i {
+    color: brown;
+    font-size: 37px;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+div.game-bomb i {
+    color: white;
+    font-size: 32px;
+    margin-left: 13px;
+    margin-top: 2px;
+}
+div.game-any i {
+    color: black;
+    font-size: 21px;
+    margin-left: 3px;
+    margin-top: 2px;
+}
