@@ -1,59 +1,63 @@
 'use strict';
 
-function Cell( color ) {
+/*global diamond:false */
+
+window.diamond = window.diamond || {};
+
+diamond.Cell = function( color ) {
 	this.color = color;
 	this.row = null;
 	this.column = null;
 	this.element = null;
-}
+};
 
 /*jshint unused:false */
-Cell.prototype.isWildcard = function( firstCollapse ) {
+diamond.Cell.prototype.isWildcard = function( firstCollapse ) {
 	return ( this.color === null );
 };
 
 /*jshint unused:false */
-Cell.prototype.match = function( ocell, firstCollapse ) {
+diamond.Cell.prototype.match = function( ocell, firstCollapse ) {
 	return ( this.isWildcard( firstCollapse ) || ocell.isWildcard( firstCollapse ) || ocell.color === this.color );
 };
 
-Cell.prototype.moveTo = function( row, column ) {
+diamond.Cell.prototype.moveTo = function( row, column ) {
 	this.row = row;
 	this.column = column;
 };
 
-Cell.prototype.toString = function() {
+diamond.Cell.prototype.toString = function() {
 	return this.color;
 };
 
 /*jshint unused:false */
-Cell.prototype.renderInto = function( element ) {
+diamond.Cell.prototype.renderInto = function( element ) {
 };
 
 /*jshint unused:false */
-Cell.prototype.destroyed = function( game ) {
+diamond.Cell.prototype.destroyed = function( game ) {
 };
 
 
-function Bomb( radius ) {
+diamond.Bomb = function( radius ) {
 	this.radius = radius;
 	this.row = null;
 	this.column = null;
 	this.element = null;
-}
+};
 
-Bomb.prototype = new Cell( '!' );
-Bomb.prototype.constructor = Bomb;
+diamond.Bomb.prototype = new diamond.Cell( '!' );
+diamond.Bomb.prototype.constructor = diamond.Bomb;
 
-Bomb.prototype.isWildcard = function( firstCollapse ) {
+diamond.Bomb.prototype.isWildcard = function( firstCollapse ) {
 	return firstCollapse;
 };
 
-Bomb.prototype.match = function( ocell, firstCollapse ) {
+diamond.Bomb.prototype.match = function( ocell, firstCollapse ) {
 	return firstCollapse;
 };
 
-Bomb.prototype.destroyed = function( game ) {
+diamond.Bomb.prototype.destroyed = function( game ) {
 	var self = this;
 	game.removeCellsWhere( function( row, column, cell ) {
 		if ( row === self.row && column === self.column ) {
@@ -67,29 +71,27 @@ Bomb.prototype.destroyed = function( game ) {
 };
 
 
-function ColorBomb( color ) {
+diamond.ColorBomb = function( color ) {
 	this.color = color.toUpperCase();
 	this.row = null;
 	this.column = null;
 	this.element = null;
-}
+};
 
-ColorBomb.prototype = new Cell( 'A' );
-ColorBomb.prototype.constructor = ColorBomb;
+diamond.ColorBomb.prototype = new diamond.Cell( 'A' );
+diamond.ColorBomb.prototype.constructor = diamond.ColorBomb;
 
-ColorBomb.prototype.destroyed = function( game ) {
+diamond.ColorBomb.prototype.destroyed = function( game ) {
 	var self = this;
 	game.removeCellsWhere( function( row, column, cell ) {
 		return ( cell.color === self.color );
 	} );
 };
 
-
-function CellFactory( colors ) {
+diamond.CellFactory = function( colors ) {
 	this.colors = colors;
-}
-
-CellFactory.prototype.build = function( row, column ) {
-	return new Cell( this.colors[Math.floor(Math.random()*this.colors.length)] );
 };
 
+diamond.CellFactory.prototype.build = function( row, column ) {
+	return new diamond.Cell( this.colors[Math.floor(Math.random()*this.colors.length)] );
+};

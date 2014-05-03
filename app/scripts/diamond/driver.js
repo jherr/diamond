@@ -1,13 +1,17 @@
 'use strict';
 
-function HTMLDriver() {
+/*global diamond:false */
+
+window.diamond = window.diamond || {};
+
+diamond.HTMLDriver = function() {
 	this.board = null;
 	this.game = null;
-}
-HTMLDriver.prototype.setGame = function( game ) {
+};
+diamond.HTMLDriver.prototype.setGame = function( game ) {
 	this.game = game;
 };
-HTMLDriver.prototype.setBoard = function( board ) {
+diamond.HTMLDriver.prototype.setBoard = function( board ) {
 	this.board = board;
 	var self = this;
 	this.board.on('cellAdded', function( data ) { self.onCellAdded( data.cell ); } );
@@ -15,8 +19,8 @@ HTMLDriver.prototype.setBoard = function( board ) {
 	this.board.on('cellRemoved', function( data ) { self.onCellRemoved( data.cell ); } );
 };
 /*jshint unused:false */
-HTMLDriver.prototype.onCellAdded = function( cell ) { };
+diamond.HTMLDriver.prototype.onCellAdded = function( cell ) { };
 /*jshint unused:false */
-HTMLDriver.prototype.onCellMoved = function( cell, from ) { };
+diamond.HTMLDriver.prototype.onCellMoved = function( cell, from ) { };
 /*jshint unused:false */
-HTMLDriver.prototype.onCellRemoved = function( cell ) { };
+diamond.HTMLDriver.prototype.onCellRemoved = function( cell ) { };

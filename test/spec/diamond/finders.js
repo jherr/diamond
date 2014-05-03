@@ -2,7 +2,7 @@
 
 describe('Finders', function () {
   it('should be able to find simple sequences', function () {
-    var rcf = new RowColFinder();
+    var rcf = new diamond.RowColFinder();
 
     var gb = GameboardBuilder(['RTZ',
                                'AZT',
@@ -49,7 +49,7 @@ describe('Finders', function () {
   });
 
   it('should be able to find sequences with wildcards', function () {
-    var rcf = new RowColFinder();
+    var rcf = new diamond.RowColFinder();
 
     var gb = GameboardBuilder(['RA*AR']);
     var found = rcf.find( gb );
@@ -71,7 +71,7 @@ describe('Finders', function () {
   });
 
   it('should be able to find sequences and remove sequences', function () {
-    var rcf = new RowColFinder();
+    var rcf = new diamond.RowColFinder();
 
     var gb = GameboardBuilder(['R*AAR',
                                'T*ZFT',
@@ -87,7 +87,7 @@ describe('Finders', function () {
   });
 
   it('should be able to find sequences and remove sequences', function () {
-    var rcf = new RowColFinder();
+    var rcf = new diamond.RowColFinder();
 
     var gb = GameboardBuilder(['TZTZR',
                                'TAAAT',
@@ -186,7 +186,7 @@ describe('Finders', function () {
   } );
 
   it('should be able to find simple sequences', function () {
-    var rcf = new StrictFinder();
+    var rcf = new diamond.StrictFinder();
 
     var gb = GameboardBuilder(['RTZ',
                                'AZT',
@@ -214,7 +214,7 @@ describe('Finders', function () {
   } );
 
   it('should be able to find simple sequences with anys', function () {
-    var rcf = new StrictFinder();
+    var rcf = new diamond.StrictFinder();
 
     var gb = GameboardBuilder(['RTZ',
                                'AZT',

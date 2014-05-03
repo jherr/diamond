@@ -2,21 +2,21 @@
 
 describe('Gameboard', function () {
   it('should be able to create a gameboard', function () {
-    expect(Gameboard).not.toBe(null);
-    var gb = new Gameboard(5,10);
+    expect(diamond.Gameboard).not.toBe(null);
+    var gb = new diamond.Gameboard(5,10);
     expect(gb).not.toBe(null);
     expect(gb.get(0,0)).toBe(null);
   });
 
   it('should be able to set locations', function () {
-    var gb = new Gameboard(5,10);
+    var gb = new diamond.Gameboard(5,10);
 
-    var c1 = new Cell('red');
+    var c1 = new diamond.Cell('red');
     gb.set(1,2,c1);
     expect(c1.row).toBe(1);
     expect(c1.column).toBe(2);
 
-    var c = new Cell('red');
+    var c = new diamond.Cell('red');
     spyOn(c, 'moveTo').andCallThrough();
 
     gb.set(0,0,c);
@@ -31,8 +31,8 @@ describe('Gameboard', function () {
   });
 
   it('should be able to get rows', function () {
-    var gb = new Gameboard(5,10);
-    var c1 = new Cell('red');
+    var gb = new diamond.Gameboard(5,10);
+    var c1 = new diamond.Cell('red');
 
     gb.set(1,2,c1);
 
@@ -42,8 +42,8 @@ describe('Gameboard', function () {
   });
 
   it('should be able to get columns', function () {
-    var gb = new Gameboard(5,10);
-    var c1 = new Cell('red');
+    var gb = new diamond.Gameboard(5,10);
+    var c1 = new diamond.Cell('red');
 
     gb.set(1,2,c1);
 
@@ -89,7 +89,7 @@ describe('Gameboard', function () {
     var addeds = [];
     var moveds = [];
     var removeds = [];
-    var gb = new Gameboard(5,10,{
+    var gb = new diamond.Gameboard(5,10,{
         cellAdded: function( event ) {
             addeds.push( event );
         },
@@ -101,7 +101,7 @@ describe('Gameboard', function () {
         }
     });
 
-    var c1 = new Cell('red');
+    var c1 = new diamond.Cell('red');
     gb.set(1,2,c1);
     expect(c1.row).toBe(1);
     expect(c1.column).toBe(2);

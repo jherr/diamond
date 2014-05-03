@@ -1,8 +1,10 @@
 'use strict';
 
-describe('DiamondGame', function () {
+'use strict';
+
+describe('Bombs', function () {
   it('click, click, boom', function () {
-    var gb = new Gameboard(10,10);
+    var gb = new diamond.Gameboard(10,10);
     var builder = new TestFactoryWithGrid([
       'TZTZTZTZTZ',
       'ZTZTZTZTZT',
@@ -17,7 +19,7 @@ describe('DiamondGame', function () {
     ]);
 
     var gameStarted = false;
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       initialCollapse: false,
       cascadeCollapses: false,
       on: {
@@ -46,7 +48,7 @@ describe('DiamondGame', function () {
   });
 
   it('click, click, color boom', function () {
-    var gb = new Gameboard(10,10);
+    var gb = new diamond.Gameboard(10,10);
     var builder = new TestFactoryWithGrid([
       'TZTZTZTZTZ',
       'ZTZTZTZTZT',
@@ -61,7 +63,7 @@ describe('DiamondGame', function () {
     ]);
 
     var gameStarted = false;
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       initialCollapse: false,
       cascadeCollapses: false,
       on: {

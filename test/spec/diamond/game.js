@@ -1,12 +1,12 @@
 'use strict';
 
-describe('DiamondGame', function () {
+describe('Game', function () {
   it('should be able to create a game', function () {
-    var gb = new Gameboard(3,5);
+    var gb = new diamond.Gameboard(3,5);
     var builder = new TestFactoryWithGrid(['ZTZTZ',
                            		   		       'TZTZT',
                            	               'ZTZTZ']);
-    var dg = new DiamondGame( gb, builder, {} );
+    var dg = new diamond.Game( gb, builder, {} );
     var calledBack = false;
     dg.on( 'initialSetupComplete', function() {
     	calledBack = true;
@@ -23,12 +23,12 @@ describe('DiamondGame', function () {
   });
 
   it('game should be initialized properly', function () {
-    var gb = new Gameboard(3,5);
+    var gb = new diamond.Gameboard(3,5);
     var builder = new TestFactoryWithGrid(['ZAAAZ',
                            		   		       'TZTZT',
                            	               'ZTZTZ']);
 
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       on: {
         initialSetupComplete: function() {
           this.cellFactory = new TestFactoryWithSequence(5,'ZT');
@@ -45,12 +45,12 @@ describe('DiamondGame', function () {
   });
 
   it('game should be initialized properly', function () {
-    var gb = new Gameboard(3,5);
+    var gb = new diamond.Gameboard(3,5);
     var builder = new TestFactoryWithGrid(['ZAAAZ',
                                            'TZTZT',
                                            'ZTZTZ']);
 
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       on: {
         initialSetupComplete: function() {
           this.cellFactory = new TestFactoryWithSequence(5,'ZT');
@@ -67,13 +67,13 @@ describe('DiamondGame', function () {
   });
 
   it('game should handle clicks', function () {
-    var gb = new Gameboard(3,5);
+    var gb = new diamond.Gameboard(3,5);
     var builder = new TestFactoryWithGrid(['ZATAZ',
                                            'TTATT',
                                            'ZTZTZ']);
 
     var gameStarted = false;
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       initialCollapse: false,
       cascadeCollapses: false,
       on: {
@@ -109,13 +109,13 @@ describe('DiamondGame', function () {
 
 
   it('game should find invalid moves', function () {
-    var gb = new Gameboard(3,5);
+    var gb = new diamond.Gameboard(3,5);
     var builder = new TestFactoryWithGrid(['ZATAZ',
                                            'TZAZT',
                                            'ZTZTZ']);
 
     var invalidFound = false;
-    var dg = new DiamondGame( gb, builder, {
+    var dg = new diamond.Game( gb, builder, {
       initialCollapse: false,
       on: {
         invalidMove: function() {

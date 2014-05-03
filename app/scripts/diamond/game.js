@@ -1,13 +1,14 @@
 'use strict';
 
-/*global RowColFinder:false */
-/*global StrictFinder:false */
+/*global diamond:false */
 
-function SimpleEventDispatcher() {
+window.diamond = window.diamond || {};
+
+diamond.SimpleEventDispatcher = function() {
 	this.subscribers = {};
-}
+};
 
-SimpleEventDispatcher.prototype.setSubscribersFromObject = function( obj ) {
+diamond.SimpleEventDispatcher.prototype.setSubscribersFromObject = function( obj ) {
 	if ( obj !== undefined ) {
 		for( var k in obj ) {
 			this.on( k, obj[ k ] );
@@ -15,14 +16,14 @@ SimpleEventDispatcher.prototype.setSubscribersFromObject = function( obj ) {
 	}
 };
 
-SimpleEventDispatcher.prototype.on = function( event, callback ) {
+diamond.SimpleEventDispatcher.prototype.on = function( event, callback ) {
 	if ( this.subscribers[ event ] === undefined ) {
 		this.subscribers[ event ] = [];
 	}
 	this.subscribers[ event ].push( callback );
 };
 
-SimpleEventDispatcher.prototype.fire = function( event, data ) {
+diamond.SimpleEventDispatcher.prototype.fire = function( event, data ) {
 	if ( this.subscribers[ event ] !== undefined ) {
 		for( var cb in this.subscribers[ event ] ) {
 			this.subscribers[ event ][ cb ].call( this, data );
@@ -30,8 +31,8 @@ SimpleEventDispatcher.prototype.fire = function( event, data ) {
 	}
 };
 
-function DiamondGame( gameboard, cellFactory, options ) {
-	DiamondGame.prototype.constructor();
+diamond.Game = function( gameboard, cellFactory, options ) {
+	diamond.Game.prototype.constructor();
 
 	this.gameboard = gameboard;
 	this.cellFactory = cellFactory;
@@ -45,8 +46,8 @@ function DiamondGame( gameboard, cellFactory, options ) {
 	this.centroidsForFinder = [];
 
 	this.options = options;
-	this.options.finder = this.options.finder || new RowColFinder();
-	this.options.firstFinder = this.options.firstFinder || new StrictFinder();
+	this.options.finder = this.options.finder || new diamond.RowColFinder();
+	this.options.firstFinder = this.options.firstFinder || new diamond.StrictFinder();
 	if( this.options.initialCollapse === undefined ) {
 		this.options.initialCollapse = true;
 	}
@@ -60,19 +61,19 @@ function DiamondGame( gameboard, cellFactory, options ) {
 	}
 
 	this.setSubscribersFromObject( this.options.on );
-}
+};
 
-DiamondGame.prototype = new SimpleEventDispatcher();
+diamond.Game.prototype = new diamond.SimpleEventDispatcher();
 
-DiamondGame.prototype.inFirstCollapse = function() {
+diamond.Game.prototype.inFirstCollapse = function() {
 	return ( this.centroidsForFinder.length > 0 );
 };
 
-DiamondGame.prototype.hasPending = function() {
+diamond.Game.prototype.hasPending = function() {
 	return ( this.locked || this.pending.length > 0 );
 };
 
-DiamondGame.prototype.servicePending = function() {
+diamond.Game.prototype.servicePending = function() {
 	if ( this.hasPending() && this.locked === false ) {
 		var action = this.pending.shift();
 		if ( action.call( this ) === false ) {
@@ -88,11 +89,11 @@ DiamondGame.prototype.servicePending = function() {
 	return this.hasPending();
 };
 
-DiamondGame.prototype.addPending = function( func ) {
+diamond.Game.prototype.addPending = function( func ) {
 	this.pending.push( func );
 };
 
-DiamondGame.prototype.addPendingDelay = function( delay ) {
+diamond.Game.prototype.addPendingDelay = function( delay ) {
 	if( delay !== undefined && delay > 0 ) {
 		this.pending.push( function( game ) {
 			game.locked = true;
@@ -104,11 +105,11 @@ DiamondGame.prototype.addPendingDelay = function( delay ) {
 	}
 };
 
-DiamondGame.prototype.clickCell = function( cell ) {
+diamond.Game.prototype.clickCell = function( cell ) {
 	this.click( parseInt( cell.row ), parseInt( cell.column ) );
 };
 
-DiamondGame.prototype.click = function( row, column ) {
+diamond.Game.prototype.click = function( row, column ) {
 	if ( this.firstPoint === null ) {
 		this.firstPoint = { row: row, column: column };
 	} else {
@@ -137,7 +138,7 @@ DiamondGame.prototype.click = function( row, column ) {
 	}
 };
 
-DiamondGame.prototype.validMove = function(pt1,pt2) {
+diamond.Game.prototype.validMove = function(pt1,pt2) {
 	if ( pt1.row === pt2.row ) {
 		if ( pt1.column === pt2.column - 1 || pt1.column === pt2.column + 1 ) {
 			return true;
@@ -150,7 +151,7 @@ DiamondGame.prototype.validMove = function(pt1,pt2) {
 	return false;
 };
 
-DiamondGame.prototype.start = function() {
+diamond.Game.prototype.start = function() {
 	this.initialSetup();
 	if ( this.options.initialCollapse ) {
 		this.collapse();
@@ -162,7 +163,7 @@ DiamondGame.prototype.start = function() {
 	} );
 };
 
-DiamondGame.prototype.findCollapses = function( ) {
+diamond.Game.prototype.findCollapses = function( ) {
 	if ( this.centroidsForFinder.length > 0 ) {
 		var found = this.options.firstFinder.find( this.gameboard, this.centroidsForFinder );
 		this.centroidsForFinder = [];
@@ -172,12 +173,12 @@ DiamondGame.prototype.findCollapses = function( ) {
 	}
 };
 
-DiamondGame.prototype.removeCells = function( cells ) {
+diamond.Game.prototype.removeCells = function( cells ) {
 	this.bulkRemoveCells( cells );
 	this.gameboard.removeGroups( [ cells ] );
 };
 
-DiamondGame.prototype.removeCellsWhere = function( callback ) {
+diamond.Game.prototype.removeCellsWhere = function( callback ) {
 	var cells = [];
 	for( var r = 0; r < this.gameboard.rows; r++ ) {
 		for( var c = 0; c < this.gameboard.columns; c++ ) {
@@ -194,14 +195,14 @@ DiamondGame.prototype.removeCellsWhere = function( callback ) {
 	this.gameboard.removeGroups( [ cells ] );
 };
 
-DiamondGame.prototype.removeGroups = function( groups ) {
+diamond.Game.prototype.removeGroups = function( groups ) {
 	for( var gr in groups ) {
 		this.bulkRemoveCells( groups[ gr ] );
 	}
 	this.gameboard.removeGroups( groups );
 };
 
-DiamondGame.prototype.bulkRemoveCells = function( cells ) {
+diamond.Game.prototype.bulkRemoveCells = function( cells ) {
 	for( var ci in cells ) {
 		var cell = cells[ ci ];
 		if ( cell ) {
@@ -214,7 +215,7 @@ DiamondGame.prototype.bulkRemoveCells = function( cells ) {
 	}
 };
 
-DiamondGame.prototype.collapse = function( ) {
+diamond.Game.prototype.collapse = function( ) {
 	var found = this.findCollapses();
 	if ( found.length > 0 ) {
 		this.addPending( function() {
@@ -260,7 +261,7 @@ DiamondGame.prototype.collapse = function( ) {
 	return ( found.length > 0 );
 };
 
-DiamondGame.prototype.initialSetup = function() {
+diamond.Game.prototype.initialSetup = function() {
 	this.fire( 'initialSetupStart', null );
 	for( var r = 0; r < this.gameboard.rows; r++ ) {
 		for( var c = 0; c < this.gameboard.columns; c++ ) {

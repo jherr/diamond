@@ -1,11 +1,7 @@
 'use strict';
 
+/*global diamond:false */
 /*global $:false */
-/*global Gameboard:false */
-/*global DiamondGame:false */
-/*global HTMLDriver:false */
-/*global Cell:false */
-/*global Bomb:false */
 
 function MyHTMLDriver( host ) {
 	MyHTMLDriver.prototype.constructor();
@@ -14,8 +10,8 @@ function MyHTMLDriver( host ) {
 	this.cellHeight = 40;
 	this.gutter = 5;
 }
-MyHTMLDriver.prototype = new HTMLDriver();
-MyHTMLDriver.prototype.constructor = HTMLDriver;
+MyHTMLDriver.prototype = new diamond.HTMLDriver();
+MyHTMLDriver.prototype.constructor = diamond.HTMLDriver;
 /*jshint unused:false */
 MyHTMLDriver.prototype.onCellAdded = function( cell ) {
 	var left = cell.column * ( this.cellWidth + this.gutter );
@@ -57,8 +53,8 @@ function MyCell( color ) {
 	this.column = null;
 	this.element = null;
 }
-MyCell.prototype = new Cell( null );
-MyCell.prototype.constructor = Cell;
+MyCell.prototype = new diamond.Cell( null );
+MyCell.prototype.constructor = diamond.Cell;
 MyCell.prototype.iconMap = {heart:'heart',chevy:'chevron-circle-up',tictac:'th',square:'square',star:'star'};
 MyCell.prototype.renderInto = function( element ) {
 	$(element).append('<div class="diamond game-'+this.color+'"><i class="fa fa-'+this.iconMap[this.color]+'"></i></div>');
@@ -70,8 +66,8 @@ function MyBomb( color ) {
 	this.column = null;
 	this.element = null;
 }
-MyBomb.prototype = new Bomb( null );
-MyBomb.prototype.constructor = Bomb;
+MyBomb.prototype = new diamond.Bomb( null );
+MyBomb.prototype.constructor = diamond.Bomb;
 MyBomb.prototype.renderInto = function( element ) {
 	$(element).append('<div class="diamond game-bomb"><i class="fa fa-flash"></i></div>');
 };
@@ -91,7 +87,7 @@ angular.module('diamondApp')
 	.controller('MainCtrl', function ($scope) {
 		$scope.total = 0;
 		$scope.factory = new MyFactory();
-		$scope.game = new DiamondGame( new Gameboard(12,8), $scope.factory, {
+		$scope.game = new diamond.Game( new diamond.Gameboard(12,8), $scope.factory, {
 			htmlDriver: new MyHTMLDriver( $('#board') ),
 			initialCollapse: true,
 			on: {

@@ -1,10 +1,14 @@
 'use strict';
 
-function StrictFinder( cutoff ) {
-	this.cutoff = cutoff || 3;
-}
+/*global diamond:false */
 
-StrictFinder.prototype.find = function( board, centroids ) {
+window.diamond = window.diamond || {};
+
+diamond.StrictFinder = function( cutoff ) {
+	this.cutoff = cutoff || 3;
+};
+
+diamond.StrictFinder.prototype.find = function( board, centroids ) {
 	var groups = [];
 
 	for( var c in centroids ) {
@@ -25,7 +29,7 @@ StrictFinder.prototype.find = function( board, centroids ) {
 	return out.length > 0 ? [ out ] : [];
 };
 
-StrictFinder.prototype.findInSeries = function( series, origin, out ) {
+diamond.StrictFinder.prototype.findInSeries = function( series, origin, out ) {
 	var ocell = series[ origin ];
 	if ( ocell.isWildcard( true ) ) {
 		return;
@@ -55,11 +59,11 @@ StrictFinder.prototype.findInSeries = function( series, origin, out ) {
 };
 
 
-function RowColFinder( cutoff ) {
+diamond.RowColFinder = function( cutoff ) {
 	this.cutoff = cutoff || 3;
-}
+};
 
-RowColFinder.prototype.find = function( board ) {
+diamond.RowColFinder.prototype.find = function( board ) {
 	var out = [];
 
 	var found = this.findSequences( board.allRows() );
@@ -71,7 +75,7 @@ RowColFinder.prototype.find = function( board ) {
 	return out;
 };
 
-RowColFinder.prototype.findSequences = function( rows ) {
+diamond.RowColFinder.prototype.findSequences = function( rows ) {
 	var out = [];
 
 	for( var r in rows ) {
