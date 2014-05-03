@@ -8,13 +8,13 @@ function Cell( color ) {
 }
 
 /*jshint unused:false */
-Cell.prototype.isWildcard = function( ) {
+Cell.prototype.isWildcard = function( firstCollapse ) {
 	return ( this.color === null );
 };
 
 /*jshint unused:false */
-Cell.prototype.match = function( ocell ) {
-	return ( this.isWildcard() || ocell.isWildcard() || ocell.color === this.color );
+Cell.prototype.match = function( ocell, firstCollapse ) {
+	return ( this.isWildcard( firstCollapse ) || ocell.isWildcard( firstCollapse ) || ocell.color === this.color );
 };
 
 Cell.prototype.moveTo = function( row, column ) {
@@ -45,12 +45,12 @@ function Bomb( radius ) {
 Bomb.prototype = new Cell( '!' );
 Bomb.prototype.constructor = Bomb;
 
-Bomb.prototype.isWildcard = function( ) {
-	return true;
+Bomb.prototype.isWildcard = function( firstCollapse ) {
+	return firstCollapse;
 };
 
-Bomb.prototype.match = function( ocell ) {
-	return true;
+Bomb.prototype.match = function( ocell, firstCollapse ) {
+	return firstCollapse;
 };
 
 Bomb.prototype.destroyed = function( game ) {
@@ -93,36 +93,3 @@ CellFactory.prototype.build = function( row, column ) {
 	return new Cell( this.colors[Math.floor(Math.random()*this.colors.length)] );
 };
 
-
-function TestFactoryWithGrid( grid ) {
-	this.grid = grid;
-	this.build = function( row, column ) {
-		if ( this.grid[row].charAt(column) === '!' ) {
-			return new Bomb( 3 );
-		} else {
-			var color = this.grid[row].charAt(column);
-			if ( color.search(/^[a-z]$/) === 0 ) {
-				return new ColorBomb( color );
-			} else {
-				return new Cell( color );
-			}
-		}
-	};
-}
-
-function TestFactoryWithSequence( columns, sequence ) {
-	this.columns = columns;
-	this.sequence = sequence;
-	this.build = function( row, column ) {
-		var offset = ( ( row * this.columns ) + column ) % this.sequence.length;
-		return new Cell( this.sequence.charAt( offset ) );
-	};
-}
-
-function TestFactoryWithRowSequence( sequence ) {
-	this.sequence = sequence;
-	this.build = function( row, column ) {
-		var offset = row % this.sequence.length;
-		return new Cell( this.sequence.charAt( offset ) );
-	};
-}

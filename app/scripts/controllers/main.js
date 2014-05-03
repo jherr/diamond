@@ -81,7 +81,7 @@ function MyFactory( game ) {
 	this.colors = [ 'heart', 'chevy', 'tictac', 'square', 'star' ];
 }
 MyFactory.prototype.build = function( row, column ) {
-	if ( this.started && Math.random() < 0.02 ) {
+	if ( this.started && Math.random() < 0.01 ) {
 		return new MyBomb();
 	}
 	return new MyCell( this.colors[Math.floor(Math.random()*this.colors.length)] );
@@ -91,8 +91,7 @@ angular.module('diamondApp')
 	.controller('MainCtrl', function ($scope) {
 		$scope.total = 0;
 		$scope.factory = new MyFactory();
-		var gb = new Gameboard(12,8);
-		$scope.game = new DiamondGame( gb, $scope.factory, {
+		$scope.game = new DiamondGame( new Gameboard(12,8), $scope.factory, {
 			htmlDriver: new MyHTMLDriver( $('#board') ),
 			initialCollapse: true,
 			on: {
@@ -100,12 +99,13 @@ angular.module('diamondApp')
 					$scope.factory.started = true;
 				},
 				score: function( count ) {
-					$scope.$apply( function() { $scope.total += count; } );
+					$scope.total += count;
 				}
 			}
 		} );
 		$scope.game.start();
 		window.setInterval( function() {
 			$scope.game.servicePending();
+			$scope.$digest();
 		}, 50 );
 	});

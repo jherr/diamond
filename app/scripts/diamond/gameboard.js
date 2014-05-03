@@ -1,8 +1,6 @@
 'use strict';
 
 /*global SimpleEventDispatcher:false */
-/*global Bomb:false */
-/*global Cell:false */
 
 function Gameboard( rows, columns, eventListeners ) {
 	Gameboard.prototype.constructor();
@@ -193,23 +191,3 @@ Gameboard.prototype.fill = function( factory ) {
 	}
 	return found;
 };
-
-/*jshint unused:false */
-function GameboardBuilder( rows ) {
-	var gb = new Gameboard( rows.length, rows[0].length );
-	for( var r in rows ) {
-		for( var c = 0; c < rows[r].length; c++ ) {
-			var ch = rows[r].charAt( c );
-			if ( ch === '-' ) {
-				gb.set( parseInt( r ), c, null );
-			} else if ( ch === '!') {
-				gb.set( parseInt( r ), c, new Bomb( 5 ) );
-			} else {
-				var color = ch === '*' ? null : ch;
-				var cell = new Cell( color );
-				gb.set( parseInt( r ), c, cell );
-			}
-		}
-	}
-	return gb;
-}

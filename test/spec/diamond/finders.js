@@ -45,7 +45,7 @@ describe('Finders', function () {
     gb = GameboardBuilder(['ZTZTZTZTZT', 'TZTZTZTZTZ', 'ZTZTZTZTZT', 'TZTZTZTZTZ', 'ZTZATAZTZT', 'TZTZ!ZTZTZ', 'ZTZTZTZTZT', 'TZTZTZTZTZ', 'ZTZTZTZTZT', 'TZTZTZTZTZ']);
     gb.swap( gb.get( 4, 4 ), gb.get( 5, 4 ) );
     found = rcf.find( gb );
-    expect(colorsInGrid(found)).toEqual([['A','!','A'],['T','!','T']]);
+    expect(colorsInGrid(found)).toEqual([]);
   });
 
   it('should be able to find sequences with wildcards', function () {
@@ -183,5 +183,59 @@ describe('Finders', function () {
       shapes.push( shape );
     });
     expect(shapes.length).toBe(0);
+  } );
+
+  it('should be able to find simple sequences', function () {
+    var rcf = new StrictFinder();
+
+    var gb = GameboardBuilder(['RTZ',
+                               'AZT',
+                               'ATZ',
+                               'AZT',
+                               'RTZ']);
+
+    var found = rcf.find(gb,[{column:0,row:1},{column:0,row:2}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+    found = rcf.find(gb,[{column:1,row:1},{column:1,row:2}]);
+    expect(colorsInGrid(found)).toEqual([]);
+    found = rcf.find(gb,[{column:0,row:0},{column:1,row:0}]);
+    expect(colorsInGrid(found)).toEqual([]);
+
+    found = rcf.find(gb,[{column:0,row:2},{column:0,row:3}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+    found = rcf.find(gb,[{column:0,row:3},{column:0,row:2}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+    found = rcf.find(gb,[{column:0,row:1},{column:1,row:1}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+    found = rcf.find(gb,[{column:0,row:2},{column:1,row:2}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+    found = rcf.find(gb,[{column:0,row:3},{column:1,row:3}]);
+    expect(colorsInGrid(found)).toEqual([['A','A','A']]);
+  } );
+
+  it('should be able to find simple sequences with anys', function () {
+    var rcf = new StrictFinder();
+
+    var gb = GameboardBuilder(['RTZ',
+                               'AZT',
+                               '*TZ',
+                               'AZT',
+                               'RTZ']);
+
+    var found = rcf.find(gb,[{column:0,row:1},{column:0,row:2}]);
+    expect(colorsInGrid(found)).toEqual([['A',null,'A']]);
+    found = rcf.find(gb,[{column:1,row:1},{column:1,row:2}]);
+    expect(colorsInGrid(found)).toEqual([]);
+    found = rcf.find(gb,[{column:0,row:0},{column:1,row:0}]);
+    expect(colorsInGrid(found)).toEqual([]);
+
+    found = rcf.find(gb,[{column:0,row:2},{column:0,row:3}]);
+    expect(colorsInGrid(found)).toEqual([['A',null,'A']]);
+    found = rcf.find(gb,[{column:0,row:3},{column:0,row:2}]);
+    expect(colorsInGrid(found)).toEqual([['A',null,'A']]);
+    found = rcf.find(gb,[{column:0,row:1},{column:1,row:1}]);
+    expect(colorsInGrid(found)).toEqual([['A',null,'A']]);
+    found = rcf.find(gb,[{column:0,row:3},{column:1,row:3}]);
+    expect(colorsInGrid(found)).toEqual([['A',null,'A']]);
   } );
 });

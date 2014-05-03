@@ -1,5 +1,60 @@
 'use strict';
 
+function StrictFinder( cutoff ) {
+	this.cutoff = cutoff || 3;
+}
+
+StrictFinder.prototype.find = function( board, centroids ) {
+	var groups = [];
+
+	for( var c in centroids ) {
+		this.findInSeries( board.row( centroids[c].row ), centroids[c].column, groups );
+		this.findInSeries( board.column( centroids[c].column ), centroids[c].row, groups );
+	}
+
+	var uniqs = {};
+	for( var o in groups ) {
+		for ( var i in groups[o] ) {
+			uniqs[ groups[o][i]._id ] = groups[o][i];
+		}
+	}
+	var out = [];
+	for( var k in uniqs ) {
+		out.push( uniqs[ k ] );
+	}
+	return out.length > 0 ? [ out ] : [];
+};
+
+StrictFinder.prototype.findInSeries = function( series, origin, out ) {
+	var ocell = series[ origin ];
+	if ( ocell.isWildcard( true ) ) {
+		return;
+	} else {
+		var add = [ ocell ];
+		for( var c = origin - 1; c >=0; c-- ) {
+			if ( ocell.match( series[ c ], true ) ) {
+				add.push( series[ c ] );
+			} else {
+				break;
+			}
+		}
+		for( c = origin + 1; c < series.length; c++ ) {
+			if ( ocell.match( series[ c ], true ) ) {
+				add.push( series[ c ] );
+			} else {
+				break;
+			}
+		}
+		if ( add.length >= this.cutoff ) {
+			out.push( add );
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
+
 function RowColFinder( cutoff ) {
 	this.cutoff = cutoff || 3;
 }
@@ -33,13 +88,13 @@ RowColFinder.prototype.findSequences = function( rows ) {
 				seq = [];
 				nonWild = null;
 			} else {
-				if ( cell.isWildcard( ) ) {
+				if ( cell.isWildcard( false ) ) {
 					seq.push( cell );
 				} else {
 					if ( nonWild === null ) {
 						nonWild = cell;
 					}
-					if( nonWild.match( cell ) ) {
+					if( nonWild.match( cell, false ) ) {
 						seq.push( cell );
 					} else {
 						if ( seq.length >= this.cutoff ) {
@@ -47,7 +102,7 @@ RowColFinder.prototype.findSequences = function( rows ) {
 						}
 						if ( seq.length > 0 ) {
 							var last = seq[ seq.length - 1 ];
-							seq = last.isWildcard( ) ? [ last, cell ] : [ cell ];
+							seq = last.isWildcard( false ) ? [ last, cell ] : [ cell ];
 						} else {
 							seq = [ cell ];
 						}

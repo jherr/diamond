@@ -1,6 +1,7 @@
 'use strict';
 
 /*global RowColFinder:false */
+/*global StrictFinder:false */
 
 function SimpleEventDispatcher() {
 	this.subscribers = {};
@@ -41,9 +42,11 @@ function DiamondGame( gameboard, cellFactory, options ) {
 	this.afterPending = [];
 	this.removalSession = {};
 	this.debug = false;
+	this.centroidsForFinder = [];
 
 	this.options = options;
 	this.options.finder = this.options.finder || new RowColFinder();
+	this.options.firstFinder = this.options.firstFinder || new StrictFinder();
 	if( this.options.initialCollapse === undefined ) {
 		this.options.initialCollapse = true;
 	}
@@ -60,6 +63,10 @@ function DiamondGame( gameboard, cellFactory, options ) {
 }
 
 DiamondGame.prototype = new SimpleEventDispatcher();
+
+DiamondGame.prototype.inFirstCollapse = function() {
+	return ( this.centroidsForFinder.length > 0 );
+};
 
 DiamondGame.prototype.hasPending = function() {
 	return ( this.locked || this.pending.length > 0 );
@@ -111,10 +118,15 @@ DiamondGame.prototype.click = function( row, column ) {
 
 			this.gameboard.swap( cell1, cell2 );
 
-			var found = this.options.finder.find( this.gameboard );
+			var centroids = [
+				this.firstPoint,
+				{ row: row, column: column }
+			];
+			var found = this.options.firstFinder.find( this.gameboard, centroids );
 
 			if ( found.length > 0 ) {
-				this.collapse( true );
+				this.centroidsForFinder = centroids;
+				this.collapse();
 			} else {
 				this.gameboard.swap( cell1, cell2 );
 			}
@@ -151,7 +163,13 @@ DiamondGame.prototype.start = function() {
 };
 
 DiamondGame.prototype.findCollapses = function( ) {
-	return this.options.finder.find( this.gameboard );
+	if ( this.centroidsForFinder.length > 0 ) {
+		var found = this.options.firstFinder.find( this.gameboard, this.centroidsForFinder );
+		this.centroidsForFinder = [];
+		return found;
+	} else {
+		return this.options.finder.find( this.gameboard, this.centroidsForFinder );
+	}
 };
 
 DiamondGame.prototype.removeCells = function( cells ) {
@@ -197,7 +215,7 @@ DiamondGame.prototype.bulkRemoveCells = function( cells ) {
 };
 
 DiamondGame.prototype.collapse = function( ) {
-	var found = this.findCollapses( );
+	var found = this.findCollapses();
 	if ( found.length > 0 ) {
 		this.addPending( function() {
 			this.fire('removingGroups',found);
