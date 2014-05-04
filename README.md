@@ -17,7 +17,7 @@ The important directories are:
 
 /src - The diamond engine file.
 
-## Using This
+## Using This Library
 
 You should be able to:
 
