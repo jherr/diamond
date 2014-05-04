@@ -17,6 +17,18 @@ The important directories are:
 
 /src - The diamond engine file.
 
+## Using This
+
+You should be able to:
+
+```
+bower install diamond
+```
+
+And then you can follow the patterns show in the app folder in main.js for an example of how to use the diamon library.
+
+Good luck!
+
 ## History
 
 I noticed on the BART a ridiculous number of people playing basically the same match three dropping game. And I said to myself; "I could write that." So I wrote it the first time really fast to make sure I could write it. And then I reimplemented it with unit tests and in an OO way, so that it can be reused.
