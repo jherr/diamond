@@ -293,8 +293,29 @@ module.exports = function (grunt) {
       }
     },
 
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['<%= yeoman.app %>/scripts/diamond/*.js'],
+        dest: 'src/diamond.js',
+      }
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
+      src:{
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= yeoman.app %>/scripts/diamond',
+          dest: 'src',
+          src: [
+            '*.js'
+          ]
+        }]
+      },
       dist: {
         files: [{
           expand: true,

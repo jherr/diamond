@@ -23,6 +23,9 @@ MyHTMLDriver.prototype.onCellAdded = function( cell ) {
 			self.onClick( cell );
 		}
 	});
+	newElement[0].addEventListener('touchend',function(){
+		self.onClick( cell );
+	});
 	cell.renderInto( newElement );
 	cell.element = newElement;
 	this.host.append( newElement );
@@ -87,7 +90,7 @@ angular.module('diamondApp')
 	.controller('MainCtrl', function ($scope) {
 		$scope.total = 0;
 		$scope.factory = new MyFactory();
-		$scope.game = new diamond.Game( new diamond.Gameboard(12,8), $scope.factory, {
+		$scope.game = new diamond.Game( new diamond.Gameboard(9,7), $scope.factory, {
 			htmlDriver: new MyHTMLDriver( $('#board') ),
 			initialCollapse: true,
 			on: {

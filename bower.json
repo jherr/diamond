@@ -15,5 +15,7 @@
   "devDependencies": {
     "angular-mocks": "1.2.15",
     "angular-scenario": "1.2.15"
-   }
+   },
+   "main": "src/diamond.js",
+   "description": "A match three falling blocks game in JS."
 }
